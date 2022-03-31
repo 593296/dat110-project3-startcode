@@ -18,18 +18,25 @@ public class Hash {
 	
 	public static BigInteger hashOf(String entity) {		
 		
+
 		// Task: Hash a given string using MD5 and return the result as a BigInteger.
-		
+
 		// we use MD5 with 128 bits digest
-		
-		// compute the hash of the input 'entity'
-		
-		// convert the hash into hex format
-		
-		// convert the hex into BigInteger
-		
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+
+			// compute the hash of the input 'entity'
+			byte[] messageDigest = md.digest(entity.getBytes());
+			
+			// convert the hash into hex format
+			String hex = toHex(messageDigest);
+			
+			// convert the hex into BigInteger
+			hashint = new BigInteger(hex, 16);
+		} catch (NoSuchAlgorithmException e) {
+
+		}
 		// return the BigInteger
-		
 		return hashint;
 	}
 	
