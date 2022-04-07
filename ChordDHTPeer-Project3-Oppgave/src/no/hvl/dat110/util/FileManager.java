@@ -67,9 +67,6 @@ public class FileManager {
 			// store the hash in the replicafiles array.
 			replicafiles[i] = hash;
 		}
-		
-		
-
 	}
 	
     /**
@@ -86,35 +83,26 @@ public class FileManager {
     	
     	// create replicas of the filename
     	createReplicaFiles();
-    	NodeInterface peer = getChordnode();
+    	
+    	Random rnd = new Random();
+    	int index = rnd.nextInt(Util.numReplicas-1);
 		// iterate over the replicas
     	for (BigInteger f : replicafiles) {
     		// for each replica, find its successor by performing findSuccessor(replica)
-			if(Util.computeLogic(f, peer.getPredecessor().getNodeID(), peer.getNodeID()))
+			NodeInterface peer = chordnode.findSuccessor(f);
 				// call the addKey on the successor and add the replica
 				peer.addKey(f);
+				
+				if(counter == index) {
+					// call the saveFileContent() on the successor
+					peer.saveFileContent(filename, f, bytesOfFile, true);
+				}else {
+					peer.saveFileContent(filename, f, bytesOfFile, false);
+						
+				}
+				// increment counter
+				counter++;
 		}
-    	// call the saveFileContent() on the successor
-    	Random rnd = new Random();
-    	int index = rnd.nextInt(Util.numReplicas-1);
-    	
-    	BigInteger fileID = Hash.hashOf(filename);
-    	// increment counter
-    	
-    	NodeInterface succFile = peer.findSuccessor(fileID);
-    	
-    	for (BigInteger f : replicafiles) {
-			NodeInterface succ = succFile.findSuccessor(f);
-			succ.addKey(f);
-			if(counter == index) {
-				succFile.saveFileContent(filename, fileID, bytesOfFile, true);
-			}else {
-				succFile.saveFileContent(filename, fileID, bytesOfFile, false);
-					
-			}
-			counter++;
-		}
-    	
 		return counter;
     }
 	
