@@ -60,7 +60,7 @@ public class MutualExclusion {
 		clock.increment();
 
 		// adjust the clock on the message, by calling the setClock on the message
-		message.setClock(clock.getClock());
+		clock.adjustClock(message.getClock());
 
 		// wants to access resource - set the appropriate lock variable
 		WANTS_TO_ENTER_CS = true;
